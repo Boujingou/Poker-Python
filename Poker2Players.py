@@ -774,7 +774,9 @@ def PadrãoJogador(jogador):
                     print('ERRO: Escolha uma opção válida')
 
 def Printmesa():
-    if len(mesa) == 3:
+    if len(mesa) == 0:
+        print('Cartas na mesa: ░, ░, ░, ░, ░')
+    elif len(mesa) == 3:
         print(f'Cartas na mesa: {mesa[0][0]}{mesa[0][1]}, {mesa[1][0]}{mesa[1][1]}, {mesa[2][0]}{mesa[2][1]}, ░, ░')
     elif len(mesa) == 4:
         print(f'Cartas na mesa: {mesa[0][0]}{mesa[0][1]}, {mesa[1][0]}{mesa[1][1]}, {mesa[2][0]}{mesa[2][1]}, {mesa[3][0]}{mesa[3][1]}, ░')
@@ -1022,7 +1024,6 @@ Escolha seu modo de jogo: '''))
         baralho = Cartesiano(valores, naipes)
         cartas_jogador1 = DarCartas(cartas_jogador1)
         cartas_jogador2 = DarCartas(cartas_jogador2)
-        mesa = CartasMesa(mesa)
         jogadores.reverse()
         banca_total.reverse()
         tem_kicker = False
@@ -1051,17 +1052,33 @@ Escolha seu modo de jogo: '''))
         LimparConsole()
         Calculo_banca()
         Inicio()
-        for _ in range(3):
-            if ultimo_jogador[0] != jogadores[0]:
-                PadrãoJogador(jogadores[0])
-            if desistir[0] == 1:
-                break
-            if ultimo_jogador[0] != jogadores[1]:
-                PadrãoJogador(jogadores[1])
-            if desistir[0] == 1:
-                break
-            if len(mesa) < 5:
-                NovaCarta()
+
+        if ultimo_jogador[0] != jogadores[0]:
+            PadrãoJogador(jogadores[0])
+            turno_pulado = 1
+        if ultimo_jogador[0] != jogadores[1] and desistir[0] != 1:
+            PadrãoJogador(jogadores[1])
+        if turno_pulado == 0 and desistir[0] != 1:
+            PadrãoJogador(jogadores[0])
+
+        mesa = CartasMesa(mesa)
+        turno_pulado = 0
+        if desistir[0] != 1:
+            for _ in range(3):
+                if ultimo_jogador[0] != jogadores[0]:
+                    PadrãoJogador(jogadores[0])
+                    turno_pulado = 1
+                if desistir[0] == 1:
+                    break
+                if ultimo_jogador[0] != jogadores[1]:
+                    PadrãoJogador(jogadores[1])
+                if desistir[0] == 1:
+                    break
+                if turno_pulado == 0:
+                    PadrãoJogador(jogadores[0])
+                if len(mesa) < 5:
+                    NovaCarta()
+                turno_pulado = 0
         if desistir[0] == 0:
             LimparConsole()
             Devagarin('Calculando Resultado')
